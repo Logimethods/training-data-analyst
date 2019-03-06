@@ -43,15 +43,15 @@ YESTERDAY = datetime.datetime.combine(
 SUCCESS_TAG = 'success'
 FAILURE_TAG = 'failure'
 
-# An Airflow variable called gcs_completion_bucket is required.
+# An Airflow variable called gcp_completion_bucket is required.
 # This variable will contain the name of the bucket to move the processed
 # file to.
 
 # '_names' must appear in CSV filename to be ingested (adjust as needed)
-INPUT_BUCKET_CSV = models.Variable.get('gcp_input_location')+'/usa_names.csv' 
+INPUT_BUCKET_CSV = models.Variable.get('gcp_input_location')+'/usa_names.csv'
 
 # TODO: Populate the models.Variable.get() with the actual variable name for your output bucket
-COMPLETION_BUCKET = models.Variable.get('gcs_completion_bucket')
+COMPLETION_BUCKET = models.Variable.get('gcp_completion_bucket')
 DS_TAG = '{{ ds }}'
 DATAFLOW_FILE = os.path.join(
     configuration.get('core', 'dags_folder'), 'dataflow', 'process_delimited.py')

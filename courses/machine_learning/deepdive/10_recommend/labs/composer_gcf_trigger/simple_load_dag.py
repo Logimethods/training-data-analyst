@@ -43,13 +43,13 @@ YESTERDAY = datetime.datetime.combine(
 SUCCESS_TAG = 'success'
 FAILURE_TAG = 'failure'
 
-# An Airflow variable called gcs_completion_bucket is required.
+# An Airflow variable called gcp_completion_bucket is required.
 # This variable will contain the name of the bucket to move the processed
 # file to.
 
 # '_names' must appear in CSV filename to be ingested (adjust as needed)
 # we are only looking for files with the exact name usa_names.csv (you can specify wildcards if you like)
-INPUT_BUCKET_CSV = 'gs://'+models.Variable.get('gcp_input_location')+'/usa_names.csv' 
+INPUT_BUCKET_CSV = 'gs://'+models.Variable.get('gcp_input_location')+'/usa_names.csv'
 
 # TODO: Populate the models.Variable.get() with the actual variable name for your output bucket
 COMPLETION_BUCKET = 'gs://'+models.Variable.get('')
@@ -89,7 +89,7 @@ def move_to_completion_bucket(target_bucket, target_infix, **kwargs):
     # the information about the GCS object that triggered this DAG.
     # We extract the bucket and object name from this dictionary.
     source_bucket = models.Variable.get('gcp_input_location')
-    source_object = models.Variable.get('gcp_input_location')+'/usa_names.csv' 
+    source_object = models.Variable.get('gcp_input_location')+'/usa_names.csv'
     completion_ds = kwargs['ds']
 
     target_object = os.path.join(target_infix, completion_ds, source_object)
@@ -142,7 +142,7 @@ with models.DAG(dag_id='',
                                                        # A success_tag is used to move
                                                        # the input file to a success
                                                        # prefixed folder.
-                                                       op_args=[models.Variable.get('gcs_completion_bucket'), SUCCESS_TAG],
+                                                       op_args=[COMPLETION_BUCKET, SUCCESS_TAG],
                                                        provide_context=True,
                                                        trigger_rule=TriggerRule.ALL_SUCCESS)
 
@@ -151,7 +151,7 @@ with models.DAG(dag_id='',
                                                        # A failure_tag is used to move
                                                        # the input file to a failure
                                                        # prefixed folder.
-                                                       op_args=[models.Variable.get('gcs_completion_bucket'), FAILURE_TAG],
+                                                       op_args=[COMPLETION_BUCKET, FAILURE_TAG],
                                                        provide_context=True,
                                                        trigger_rule=TriggerRule.ALL_FAILED)
 
